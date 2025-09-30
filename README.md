@@ -2,7 +2,7 @@
      width="30%"
      style="padding: 10px">
 
-# << Título do projeto >>
+# Solar Boat The Game
 
 ## << Descrição breve do domínio do problema >>
 
