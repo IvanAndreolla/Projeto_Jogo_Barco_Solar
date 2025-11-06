@@ -10,7 +10,7 @@ O jogo terá diferentes pistas, cada uma com características únicas que aprove
 
 ## Pista 2: Circuito da Ponte (Intermediário)
 
-* **Conceito:** Um circuito em formato de "8" que passa por baixo de uma grande ponte (inspirada na Ponte Hercílio Luz, como você gosta!).
+* **Conceito:** Um circuito em formato de "8" que passa por baixo da Ponte Hercílio Luz.
 * **Jogabilidade:** A principal característica é a sombra projetada pela ponte, que cobre uma parte significativa da pista. Nessa área, os barcos não geram energia, forçando o jogador a gerenciar sua bateria para atravessar o trecho de sombra e aproveitar as áreas ensolaradas.
 * **Visual Isométrico:** A ponte será o grande destaque visual, com sua estrutura passando por cima da água.
 
