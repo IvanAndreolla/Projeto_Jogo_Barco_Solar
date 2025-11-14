@@ -5,30 +5,34 @@
 
 class BarcoSolar
 {
-private:
+protected:
     // Física
     Ponto2D posicao;
     Ponto2D velocidade;
     Ponto2D aceleracao;
     float massa;
-    float angulo; // Graus
+    float angulo;
+    float velocidadeAngular;
+    float aceleracaoAngular;
 
-    // Estado do Barco
+    // Estado
     float nivelBateria;
     float capacidadeBateria;
     float taxaConsumo;
     float taxaRecarga;
 
-    // Estado da Corrida
+    // Corrida
     int voltaAtual;
     int proximoCheckpointId;
 
 public:
     BarcoSolar(float x, float y);
 
-    // Métodos de Física e Lógica
+    // Física
     void aplicarForca(Ponto2D forca);
-    void aplicarArrasto();
+    void aplicarHidrodinamica();
+    void verificarLimitesMapa();
+    void chocar();
     void atualizar(float deltaTime);
 
     // Controles
@@ -36,10 +40,17 @@ public:
     void virar(float val);
     void carregarBateria();
 
+    // IA / Automação
+    void buscarAlvo(Ponto2D alvo);
+    void incrementarCheckpoint(int totalCheckpoints);
+
     // Getters
     Ponto2D getPosicao() const;
     float getAngulo() const;
     float getBateria() const;
+    float getVelocidadeAtual() const;
+    int getProximoCheckpointId() const;
+    int getVoltaAtual() const;
 };
 
 #endif // BARCOSOLAR_H

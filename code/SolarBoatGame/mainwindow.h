@@ -2,11 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTimer>
-#include <QGraphicsScene> // <--- O Palco
-#include <QGraphicsView>  // <--- A Câmera
-#include <QGraphicsRectItem> // <--- Para um teste visual temporário
-#include "barcosolar.h"
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QProgressBar>
+#include <QLabel>
+#include "gamemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,21 +20,19 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
-    void atualizarJogo();
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
     Ui::MainWindow *ui;
-
-    // Elementos Gráficos
     QGraphicsScene *scene;
     QGraphicsView *view;
-    QGraphicsRectItem *barcoVisual; // Um quadrado simples para representar o barco por enquanto
 
-    // Lógica
-    QTimer *timer;
-    BarcoSolar *barco;
-    int frameCount;
+    QProgressBar *barraBateria;
+    QLabel *labelVelocidade;
+    QLabel *labelVoltas;
+
+    GameManager *gameManager;
 };
 
 #endif // MAINWINDOW_H

@@ -9,18 +9,16 @@ public:
     float x;
     float y;
 
-    // Construtores
     Ponto2D();
     Ponto2D(float x_, float y_);
 
-    // Operações Vetoriais (Física)
-    void add(Ponto2D v);          // Soma vetor
-    void mult(float n);           // Escala vetor
-    float mag() const;            // Magnitude (tamanho)
-    void normalize();             // Normaliza (tamanho = 1)
-    void limit(float max);        // Limita magnitude máxima
+    void add(Ponto2D v);
+    void mult(float n);
+    float mag() const;
+    void normalize();
+    void limit(float max);
+    float dist(Ponto2D v) const;
 
-    // Sobrecarga de Operadores
     Ponto2D operator+(const Ponto2D& v) const;
     Ponto2D operator-(const Ponto2D& v) const;
     Ponto2D operator*(float n) const;

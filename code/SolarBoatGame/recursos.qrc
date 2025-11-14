@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>barco.png</file>
+        <file>boia_vermelha.png</file>
+        <file>ilha.png</file>
+        <file>mar.png</file>
+        <file>boia_verde.png</file>
+    </qresource>
+</RCC>

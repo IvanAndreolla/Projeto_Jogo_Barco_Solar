@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
+#include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -8,63 +8,61 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // --- 1. CONFIGURAÇÃO GRÁFICA ---
+    // --- Configuração Visual (VIEW) ---
     scene = new QGraphicsScene(this);
+    scene->setSceneRect(-5000, 0, 10000, 5000);
+
+    // FUNDO: Textura do Mar
+    QPixmap texturaMar(":/mar.png");
+    if (texturaMar.isNull()) {
+        // Fallback: Cor azul sólida se a imagem falhar
+        scene->addRect(-5000, 0, 10000, 5000, Qt::NoPen, QBrush(QColor(0, 105, 148)));
+    } else {
+        // Pincel de textura (repete a imagem)
+        QBrush brushMar(texturaMar);
+        scene->addRect(-5000, 0, 10000, 5000, Qt::NoPen, brushMar);
+    }
+
     view = new QGraphicsView(scene, this);
+    view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    // Define o tamanho do "mundo" (800x600 pixels)
-    scene->setSceneRect(0, 0, 800, 600);
+    // --- Configuração HUD ---
+    QWidget *hudWidget = new QWidget(this);
+    hudWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
+    QVBoxLayout *layout = new QVBoxLayout(hudWidget);
 
-    // Faz a câmera (view) ocupar toda a janela
+    labelVelocidade = new QLabel("0 km/h", hudWidget);
+    labelVelocidade->setStyleSheet("font-size: 24px; font-weight: bold; color: white; text-shadow: 1px 1px 0 #000;");
+    layout->addWidget(labelVelocidade);
+
+    labelVoltas = new QLabel("Volta: 1", hudWidget);
+    labelVoltas->setStyleSheet("font-size: 18px; font-weight: bold; color: yellow; text-shadow: 1px 1px 0 #000;");
+    layout->addWidget(labelVoltas);
+
+    barraBateria = new QProgressBar(hudWidget);
+    barraBateria->setRange(0, 1000);
+    barraBateria->setValue(1000);
+    barraBateria->setStyleSheet("QProgressBar { border: 2px solid grey; border-radius: 5px; background-color: #333; color: white; } QProgressBar::chunk { background-color: #00ff00; }");
+    layout->addWidget(barraBateria);
+    layout->addStretch();
+
     setCentralWidget(view);
-    resize(820, 620); // Ajusta o tamanho da janela
+    hudWidget->resize(200, 120);
+    hudWidget->move(20, 20);
+    hudWidget->raise();
 
-    // Criar um "avatar" temporário para o barco (Quadrado Azul de 20x20)
-    barcoVisual = scene->addRect(-10, -10, 20, 20, QPen(Qt::black), QBrush(Qt::blue));
-    barcoVisual->setTransformOriginPoint(0, 0); // Para rodar pelo centro
-
-    // --- 2. INICIALIZAÇÃO LÓGICA ---
-    // Inicia o barco lógico no centro da tela
-    barco = new BarcoSolar(400, 300);
-    frameCount = 0;
-
-    // --- 3. LOOP DO JOGO ---
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &MainWindow::atualizarJogo);
-    timer->start(16); // ~60 FPS
+    // --- INICIALIZAÇÃO DO JOGO ---
+    gameManager = new GameManager(scene, view, barraBateria, labelVelocidade, labelVoltas, this);
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-    delete barco;
+MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+    if(gameManager) gameManager->processarEvento(event, true);
 }
 
-void MainWindow::atualizarJogo() {
-    frameCount++;
-
-    // --- SIMULAÇÃO DE INPUT (A mesma de antes) ---
-    if (frameCount < 100) {
-        barco->acelerar();
-        // Vamos fazer ele girar um pouco também para testar a rotação
-        barco->virar(1.0f);
-    }
-
-    // --- ATUALIZAÇÃO DA FÍSICA ---
-    barco->atualizar(0.016f);
-
-    // --- ATUALIZAÇÃO DOS GRÁFICOS (A Mágica Acontece Aqui!) ---
-
-    // 1. Pegamos a posição calculada pela física
-    Ponto2D pos = barco->getPosicao();
-    float angulo = barco->getAngulo();
-
-    // 2. Aplicamos ao objeto visual na tela
-    barcoVisual->setPos(pos.x, pos.y);
-    barcoVisual->setRotation(angulo);
-
-    // Debug no console (opcional, para conferir)
-    if (frameCount % 60 == 0) { // Só imprime a cada 1 segundo para não poluir
-        qDebug() << "Pos:" << pos.x << "," << pos.y << "Ang:" << angulo;
-    }
+void MainWindow::keyReleaseEvent(QKeyEvent *event) {
+    if(gameManager) gameManager->processarEvento(event, false);
 }
