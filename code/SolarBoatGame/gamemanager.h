@@ -7,8 +7,10 @@
 #include <QGraphicsView>
 #include <QProgressBar>
 #include <QLabel>
+#include <QPushButton>
 #include <QList>
 #include <QGraphicsTextItem>
+#include <QGraphicsPixmapItem>
 
 #include "barcojogador.h"
 #include "barcooponente.h"
@@ -22,6 +24,8 @@ class GameManager : public QObject
 public:
     GameManager(QGraphicsScene *scene, QGraphicsView *view,
                 QProgressBar *bar, QLabel *labelVel, QLabel *labelVoltas,
+                QPushButton *btnJogar, QPushButton *btnReiniciar, QPushButton *btn3, QPushButton *btn4,
+                QLabel *titulo,
                 QObject *parent = nullptr);
     ~GameManager();
 
@@ -29,17 +33,35 @@ public:
 
 public slots:
     void gameLoop();
+    void iniciarPista1();
+    void iniciarPista2();
+    void iniciarPista3();
+    void reiniciarFase();
 
 private:
-    // Controle do estado do jogo
+    enum EstadoJogo { MENU, JOGANDO, GAMEOVER };
+    EstadoJogo estadoAtual;
+    Pista::Tipo pistaAtualSelecionada;
+
+    void iniciarJogo(Pista::Tipo tipo);
     void fimDeJogo(bool venceu);
-    bool jogoAtivo;
+    void atualizarInterface();
+
+    void criarNuvens();
+    void atualizarNuvens();
+    void atualizarProfundidadeVisual();
 
     QGraphicsScene *scene;
     QGraphicsView *view;
+
     QProgressBar *barraBateria;
     QLabel *labelVelocidade;
     QLabel *labelVoltas;
+    QPushButton *btnPista1;
+    QPushButton *btnPista2;
+    QPushButton *btnPista3;
+    QPushButton *btnReiniciar;
+    QLabel *labelTitulo;
 
     QTimer *timer;
 
@@ -48,6 +70,13 @@ private:
 
     QList<BarcoOponente*> oponentesLogicos;
     QList<BarcoGrafico*> oponentesVisuais;
+
+    struct Nuvem {
+        QGraphicsPixmapItem* visual;
+        float velocidade;
+    };
+    QList<Nuvem> listaNuvens;
+    QPixmap texturaNuvem;
 
     InputManager *inputManager;
     Pista *pista;

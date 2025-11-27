@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QGraphicsScene>
+#include <QGraphicsItem>
 #include <QPixmap>
 #include "ponto2d.h"
 #include "barcosolar.h"
@@ -13,19 +14,30 @@ class Pista
 public:
     Pista();
 
-    void gerarCenario(QGraphicsScene *scene);
-    bool verificarColisao(BarcoSolar *barco);
-    const QList<Checkpoint*>& getCheckpoints() const;
+    enum Tipo { OVAL_FACIL, OITO_MEDIO, SLALOM_DIFICIL };
 
-private:
+    // Struct para lógica
     struct Obstaculo {
         Ponto2D posicao;
         float raio;
     };
-    QList<Obstaculo> listaObstaculos;
-    QList<Checkpoint*> listaCheckpoints;
 
-    // Cache de Imagens
+    void gerarCenario(QGraphicsScene *scene, Tipo tipo);
+
+    // Retorna a posição do obstáculo colidido para o empurrão (unstick)
+    bool verificarColisaoVisual(QGraphicsItem *itemBarco, Ponto2D &posObstaculo);
+
+    const QList<Checkpoint*>& getCheckpoints() const;
+    const QList<QGraphicsItem*>& getObstaculosVisuais() const;
+    Ponto2D getPosicaoLargada() const;
+
+private:
+    QList<Obstaculo> listaObstaculos; // Dados lógicos
+    QList<QGraphicsItem*> obstaculosVisuais; // Hitbox real
+
+    QList<Checkpoint*> listaCheckpoints;
+    Ponto2D posicaoLargada;
+
     QPixmap imgIlha;
     QPixmap imgBoiaVermelha;
     QPixmap imgBoiaVerde;

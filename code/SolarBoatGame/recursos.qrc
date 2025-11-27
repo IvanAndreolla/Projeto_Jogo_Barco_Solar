@@ -5,5 +5,6 @@
         <file>ilha.png</file>
         <file>mar.png</file>
         <file>boia_verde.png</file>
+        <file>nuvem.png</file>
     </qresource>
 </RCC>
