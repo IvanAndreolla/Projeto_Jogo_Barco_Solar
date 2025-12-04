@@ -7,7 +7,7 @@
 class BarcoJogador : public BarcoSolar
 {
 public:
-    BarcoJogador(float x, float y);
+    BarcoJogador(float x, float y, QString nome = "Jogador");
     void processarInput(InputManager *input);
 };
 

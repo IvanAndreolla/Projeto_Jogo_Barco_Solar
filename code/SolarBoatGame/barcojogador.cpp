@@ -1,6 +1,10 @@
 #include "barcojogador.h"
 
-BarcoJogador::BarcoJogador(float x, float y) : BarcoSolar(x, y) {}
+BarcoJogador::BarcoJogador(float x, float y, QString nome)
+    : BarcoSolar(x, y, nome)
+{
+    // Física padrão
+}
 
 void BarcoJogador::processarInput(InputManager *input) {
     if (input->isTeclaPressionada(Qt::Key_W)) {
