@@ -6,14 +6,15 @@
 const int TOTAL_FRAMES = 64;
 const float GRAUS_POR_FRAME = 360.0f / TOTAL_FRAMES;
 
-// AJUSTE: 225 graus para alinhar sprites com física
+// Alinhar sprites com física
 const float CALIBRACAO_OFFSET = 225.0f;
 
 BarcoGrafico::BarcoGrafico(QGraphicsItem *parent)
     : GameObjectGrafico(parent)
 {
     indiceAtual = 0;
-    debugEnabled = false; // Inicia desligado, F1 liga
+    debugEnabled = false;
+    usarCorPersonalizada = false;
 
     vMotor = Ponto2D(0,0); vArrasto = Ponto2D(0,0); vRes = Ponto2D(0,0);
     valLeme = 0.0f;
@@ -35,12 +36,21 @@ BarcoGrafico::BarcoGrafico(QGraphicsItem *parent)
         QRegion region(mask);
         QPainterPath path;
         path.addRegion(region);
+
+        // Centraliza o Path para bater com o desenho
         QTransform trans;
         trans.translate(-img.width()/2, -img.height()/2);
         path = trans.map(path);
+
         formas.append(path);
     }
     setZValue(10);
+}
+
+void BarcoGrafico::setCor(QColor cor) {
+    corEquipe = cor;
+    usarCorPersonalizada = true;
+    update();
 }
 
 QRectF BarcoGrafico::boundingRect() const {
@@ -72,9 +82,25 @@ void BarcoGrafico::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
     if (frames.isEmpty()) return;
 
-    QPixmap& spriteAtual = frames[indiceAtual];
+    QPixmap spriteAtual = frames[indiceAtual];
+
     painter->setRenderHint(QPainter::SmoothPixmapTransform);
+
+    // 1. Desenha o sprite original do barco
     painter->drawPixmap(-spriteAtual.width()/2, -spriteAtual.height()/2, spriteAtual);
+
+    // 2. Aplica a máscara de cor com recorte preciso
+    if (usarCorPersonalizada) {
+        painter->save(); // Salva estado para não afetar debug depois
+
+        // Define a área de recorte no formato do barco
+        painter->setClipPath(formas[indiceAtual]);
+
+        // Pinta a cor transparente por cima apenas na área recortada
+        painter->fillRect(boundingRect(), corEquipe);
+
+        painter->restore(); // Restaura para poder desenhar o debug fora do recorte
+    }
 
     if (debugEnabled) {
         auto toIso = [](float x, float y) { return QPointF(x - y, (x + y) / 2.0f); };

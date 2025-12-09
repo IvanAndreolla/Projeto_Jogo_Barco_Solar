@@ -20,6 +20,9 @@ public:
     void atualizarDebugInfo(Ponto2D motor, Ponto2D arrasto, Ponto2D resultante, float leme);
     void setDebug(bool ativado);
 
+    // Define uma cor para diferenciar os barcos (máscara de cor)
+    void setCor(QColor cor);
+
     // Define área de redesenho do item
     QRectF boundingRect() const override;
     // Define máscara precisa de colisão
@@ -34,8 +37,11 @@ private:
     QVector<QPainterPath> formas;
     int indiceAtual;
 
-    // Estado visual de debug
+    // Estado visual
     bool debugEnabled;
+    QColor corEquipe; // Cor da máscara
+    bool usarCorPersonalizada;
+
     Ponto2D vMotor, vArrasto, vRes;
     float valLeme;
     float anguloLogicoAtual;

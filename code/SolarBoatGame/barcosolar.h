@@ -4,6 +4,10 @@
 #include "ponto2d.h"
 #include <QString>
 
+// Forward declarations
+class InputManager;
+class Pista;
+
 class BarcoSolar
 {
 protected:
@@ -35,6 +39,9 @@ protected:
     bool terminado;
     bool controleHabilitado;
 
+    // Armazena a posição fixa (1, 2, 3...) assim que o barco termina
+    int classificacaoFinal;
+
     // Dados para debug visual
     Ponto2D debugForcaMotor;
     Ponto2D debugForcaArrasto;
@@ -43,6 +50,9 @@ protected:
 
 public:
     BarcoSolar(float x, float y, QString nome);
+    virtual ~BarcoSolar() {}
+
+    virtual void controlar(InputManager*, const Pista*) {}
 
     // Reinicia posição e física
     void resetar(float x, float y);
@@ -59,9 +69,8 @@ public:
     // Mantém barco na área jogável
     void verificarLimitesMapa();
 
-    // Colisão com cenário (ricochete)
+    // Colisões
     void chocar(Ponto2D posObstaculo);
-    // Colisão barco x barco
     void colidirComBarco(BarcoSolar* outroBarco);
 
     // Loop de atualização física
@@ -81,6 +90,10 @@ public:
     void setTerminado(bool t);
     bool isTerminado() const;
 
+    // Gerenciamento de Ranking Final
+    void setClassificacaoFinal(int posicao);
+    int getClassificacaoFinal() const;
+
     // Getters de estado
     Ponto2D getPosicao() const;
     float getAngulo() const;
@@ -91,7 +104,7 @@ public:
     float getRaioColisao() const;
     QString getNome() const;
 
-    // Pontuação para classificação
+    // Pontuação
     int getScoreCorrida() const;
 
     // Getters de debug

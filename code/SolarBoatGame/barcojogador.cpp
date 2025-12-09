@@ -6,6 +6,11 @@ BarcoJogador::BarcoJogador(float x, float y, QString nome)
     // Física padrão
 }
 
+void BarcoJogador::controlar(InputManager *input, const Pista *pista) {
+    Q_UNUSED(pista);
+    processarInput(input);
+}
+
 void BarcoJogador::processarInput(InputManager *input) {
     if (input->isTeclaPressionada(Qt::Key_W)) {
         this->acelerar();

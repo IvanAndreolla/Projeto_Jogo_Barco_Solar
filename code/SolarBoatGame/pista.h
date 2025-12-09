@@ -47,6 +47,7 @@ private:
     QPixmap imgIlha;
     QPixmap imgBoiaVermelha;
     QPixmap imgBoiaVerde;
+    QPixmap imgPonte;
 
     // Métodos auxiliares privados para instanciar objetos específicos na cena
     void criarIlha(QGraphicsScene *scene, float x, float y, float diametro);

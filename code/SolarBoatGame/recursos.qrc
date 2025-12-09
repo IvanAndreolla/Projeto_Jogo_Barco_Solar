@@ -70,5 +70,6 @@
         <file>barco_2.png</file>
         <file>barco_1.png</file>
         <file>mar.png</file>
+        <file>ponte.png</file>
     </qresource>
 </RCC>

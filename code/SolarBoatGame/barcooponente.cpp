@@ -1,10 +1,16 @@
 #include "barcooponente.h"
 #include "pista.h"
+#include "inputmanager.h"
 
 BarcoOponente::BarcoOponente(float x, float y, QString nome)
     : BarcoSolar(x, y, nome)
 {
-    massa = 520.0f; // Levemente mais pesado para diferenciar
+    massa = 400.0f; // Altera o peso mudando a dificuldade do jogo
+}
+
+void BarcoOponente::controlar(InputManager *input, const Pista *pista) {
+    Q_UNUSED(input);
+    tomarDecisao(pista);
 }
 
 void BarcoOponente::tomarDecisao(const Pista* pista) {
