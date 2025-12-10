@@ -5,7 +5,7 @@
 BarcoOponente::BarcoOponente(float x, float y, QString nome)
     : BarcoSolar(x, y, nome)
 {
-    massa = 400.0f; // Altera o peso mudando a dificuldade do jogo
+    massa = 450.0f; // Altera o peso mudando a dificuldade do jogo
 }
 
 void BarcoOponente::controlar(InputManager *input, const Pista *pista) {

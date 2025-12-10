@@ -22,12 +22,15 @@ protected:
     float velocidadeAngular;
     float aceleracaoAngular;
 
-    // Sistema de energia
+    // Sistema de energia e Mecânica
     float nivelBateria;
     float capacidadeBateria;
     float taxaConsumo;
     float taxaRecarga;
     float intensidadeSolar;
+
+    float potenciaAtual;    // 0.0 a 1.0 (Inércia do motor)
+    float anguloLemeAtual;  // Graus de inclinação do leme (-45 a 45)
 
     // Progresso na corrida
     int voltaAtual;
@@ -52,6 +55,7 @@ public:
     BarcoSolar(float x, float y, QString nome);
     virtual ~BarcoSolar() {}
 
+    // --- MÉTODO POLIMÓRFICO ---
     virtual void controlar(InputManager*, const Pista*) {}
 
     // Reinicia posição e física
@@ -104,7 +108,7 @@ public:
     float getRaioColisao() const;
     QString getNome() const;
 
-    // Pontuação
+    // Pontuação antiga (mantida para lógica interna)
     int getScoreCorrida() const;
 
     // Getters de debug

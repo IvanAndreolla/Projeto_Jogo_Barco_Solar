@@ -33,12 +33,17 @@ void BarcoSolar::resetar(float x, float y) {
     velocidadeAngular = 0.0f;
     aceleracaoAngular = 0.0f;
     nivelBateria = 1000.0f;
+
+    // Reset das variáveis de suavização
+    potenciaAtual = 0.0f;
+    anguloLemeAtual = 0.0f;
+
     voltaAtual = 0;
     proximoCheckpointId = 0;
     intensidadeSolar = 1.0f;
     terminado = false;
     controleHabilitado = true;
-    classificacaoFinal = 0; // 0 significa que ainda não terminou
+    classificacaoFinal = 0;
 }
 
 void BarcoSolar::limparDebug() {
@@ -114,15 +119,38 @@ void BarcoSolar::colidirComBarco(BarcoSolar* outroBarco) {
 }
 
 void BarcoSolar::atualizar(float deltaTime) {
+    // 1. APLICAÇÃO DA FORÇA DO MOTOR
+    if (potenciaAtual > 0.01f) {
+        float rad = angulo * (PI / 180.0f);
+        Ponto2D forcaMotor(std::cos(rad), std::sin(rad));
+        float forcaPixels = FORCA_MOTOR * (ESCALA / 10.0f) * potenciaAtual;
+        forcaMotor.mult(forcaPixels);
+        aplicarForca(forcaMotor);
+        debugForcaMotor = forcaMotor;
+
+        if (controleHabilitado && nivelBateria > taxaConsumo) {
+            nivelBateria -= taxaConsumo * potenciaAtual;
+        } else if (nivelBateria <= taxaConsumo) {
+            potenciaAtual = 0;
+        }
+    }
+
+    // 2. APLICAÇÃO DO TORQUE
+    if (std::abs(anguloLemeAtual) > 0.1f) {
+        float speed = velocidade.mag();
+        float eficienciaHidraulica = std::clamp(speed / 150.0f, 0.0f, 1.2f);
+
+        float torque = anguloLemeAtual * 20.0f * eficienciaHidraulica;
+        aceleracaoAngular += torque;
+        debugAnguloLeme = anguloLemeAtual;
+    }
+
+    // 3. FÍSICA GERAL
     aplicarHidrodinamica();
 
-    if (terminado) {
-        velocidade.mult(0.98f);
-    }
+    if (terminado) velocidade.mult(0.98f);
 
-    if (velocidadeAngular != 0) {
-        aceleracaoAngular += -8.0f * velocidadeAngular;
-    }
+    if (velocidadeAngular != 0) aceleracaoAngular += -8.0f * velocidadeAngular;
 
     velocidadeAngular += aceleracaoAngular * deltaTime;
     angulo += velocidadeAngular * deltaTime;
@@ -132,34 +160,35 @@ void BarcoSolar::atualizar(float deltaTime) {
 
     Ponto2D mudancaVelocidade = aceleracao * deltaTime;
     velocidade.add(mudancaVelocidade);
-
     Ponto2D deslocamento = velocidade * deltaTime;
     posicao.add(deslocamento);
 
     verificarLimitesMapa();
     aceleracao.mult(0);
     carregarBateria();
+
+    // 4. DECAIMENTO SUAVE
+    potenciaAtual -= 2.0f * deltaTime;
+    if (potenciaAtual < 0.0f) potenciaAtual = 0.0f;
+
+    // Retorno do leme
+    anguloLemeAtual *= 0.85f;
+    if (std::abs(anguloLemeAtual) < 0.1f) anguloLemeAtual = 0.0f;
 }
 
 void BarcoSolar::acelerar() {
     if (controleHabilitado && nivelBateria > taxaConsumo) {
-        float rad = angulo * (PI / 180.0f);
-        Ponto2D forcaMotor(std::cos(rad), std::sin(rad));
-        float forcaPixels = FORCA_MOTOR * (ESCALA / 10.0f);
-        forcaMotor.mult(forcaPixels);
-        aplicarForca(forcaMotor);
-        debugForcaMotor = forcaMotor;
-        nivelBateria -= taxaConsumo;
+        potenciaAtual = 1.0f;
     }
 }
 
 void BarcoSolar::virar(float val) {
     if (controleHabilitado) {
-        float speed = velocidade.mag();
-        float eficienciaLeme = std::clamp(speed / 150.0f, 0.1f, 1.0f);
-        float torque = val * 250.0f * eficienciaLeme;
-        aceleracaoAngular += torque;
-        debugAnguloLeme = val;
+        // Incremento suave para o jogador
+        anguloLemeAtual += val * 0.6f;
+
+        if (anguloLemeAtual > 40.0f) anguloLemeAtual = 40.0f;
+        if (anguloLemeAtual < -40.0f) anguloLemeAtual = -40.0f;
     }
 }
 
@@ -180,14 +209,21 @@ void BarcoSolar::buscarAlvo(Ponto2D alvo) {
     while (erro > 180) erro -= 360;
     while (erro < -180) erro += 360;
 
-    float sensibilidade = 0.15f;
+    // Sensibilidade em 0.45 (IA reage mais rápido)
+    float sensibilidade = 0.45f;
     float comandoLeme = erro * sensibilidade;
-    if (comandoLeme > 3.0f) comandoLeme = 3.0f;
-    if (comandoLeme < -3.0f) comandoLeme = -3.0f;
+
+    // O jogador só consegue enviar força 3.0 pelo teclado.
+    // A IA envia até 9.0.
+    // Como a função 'virar' multiplica por 0.6, a IA conseguirá mover o leme
+    // quase 3x mais rápido que o jogador, compensando a falta de antecipação humana.
+    if (comandoLeme > 9.0f) comandoLeme = 9.0f;
+    if (comandoLeme < -9.0f) comandoLeme = -9.0f;
 
     virar(comandoLeme);
 
-    if (std::abs(erro) < 110.0f || velocidade.mag() < 50.0f) {
+    // IA desacelera um pouco se o erro angular for muito grande (curva fechada)
+    if (std::abs(erro) < 100.0f || velocidade.mag() < 60.0f) {
         acelerar();
     }
 }
