@@ -1,30 +1,32 @@
 # Especificações das Pistas
 
-O jogo terá diferentes pistas, cada uma com características únicas que aproveitam a visão isométrica.
+O jogo apresenta três circuitos distintos, projetados para explorar a mecânica de movimentação isométrica e o sistema de inércia do barco solar.
 
 ## Pista 1: Enseada do Sol (Iniciante)
 
-* **Conceito:** Pista de formato oval, simples e larga, ideal para iniciantes.
-* **Jogabilidade:** O trajeto é totalmente aberto, sem obstáculos, garantindo exposição solar constante. O foco é permitir que o jogador se acostume com os controles isométricos e a mecânica de aceleração/curvas.
-* **Visual Isométrico:** Água calma, algumas boias de marcação, céu limpo.
+* **Conceito:** Uma pista de formato **Oval** clássico, larga e sem obstáculos internos.
+* **Jogabilidade:** O foco é a adaptação aos controles. Como as curvas são abertas e constantes, o jogador pode manter a velocidade máxima na maior parte do tempo, aprendendo a lidar com a inércia do barco e o delay do leme sem punições severas.
+* **Visual:** Água aberta com ilhas apenas nas bordas distantes para delimitar o cenário.
 
 ## Pista 2: Circuito da Ponte (Intermediário)
 
-* **Conceito:** Um circuito em formato de "8" que passa por baixo da Ponte Hercílio Luz.
-* **Jogabilidade:** A principal característica é a sombra projetada pela ponte, que cobre uma parte significativa da pista. Nessa área, os barcos não geram energia, forçando o jogador a gerenciar sua bateria para atravessar o trecho de sombra e aproveitar as áreas ensolaradas.
-* **Visual Isométrico:** A ponte será o grande destaque visual, com sua estrutura passando por cima da água.
+* **Conceito:** Um traçado em formato de **"8"** (Oito), criando um ponto de cruzamento central.
+* **Destaque Visual:** A pista conta com uma renderização em alta escala da **Ponte Hercílio Luz**. Embora seja um elemento visual (sem colisão física), ela é renderizada acima dos barcos, criando a imersão de navegar por baixo do cartão postal de Florianópolis.
+* **Jogabilidade:** O formato em 8 exige que o jogador alterne entre curvas para a esquerda e para a direita, testando a capacidade de resposta do leme. O cruzamento central adiciona um risco estratégico de colisão com oponentes retardatários ou líderes.
 
-## Pista 3: Desafio das Ilhas (Avançado)
+## Pista 3: Slalom Sinuoso (Avançado)
 
-* **Conceito:** Uma pista complexa que serpenteia entre pequenas ilhas rochosas e fortificadas (como as ilhas da Baía Norte de Florianópolis).
-* **Jogabilidade:** As curvas são fechadas e os espaços são estreitos. As ilhas funcionam como obstáculos de colisão e também criam pequenas, mas cruciais, áreas de sombra. Exige alta habilidade de pilotagem e gerenciamento de energia.
-* **Visual Isométrico:** Água mais agitada, rochas, pequenas fortalezas nas ilhas, criando um cenário complexo e visualmente rico.
+* **Conceito:** Uma pista técnica gerada matematicamente (curvas senoidais), apelidada de "Ameba". O traçado é estreito e altamente sinuoso.
+* **Jogabilidade:** Exige controle preciso da potência do motor. O jogador não pode manter aceleração máxima constante, precisando desacelerar para fazer as curvas fechadas.
+* **Sistema de Guias:** Devido à complexidade das curvas, esta pista utiliza um sistema híbrido de visualização:
+    * **Boias:** Delimitam os portões principais.
+    * **Marcadores de Guia:** Pequenos pontos amarelos na água indicam o traçado ideal nas seções onde não há boias, ajudando o jogador a antecipar a próxima curva "invisível".
+* **Visual:** Ilhas estratégicas posicionadas nas "barrigas" das curvas (internas e externas) para forçar o traçado geográfico.
 
-## Possíveis Conteúdos Adicionais
+## Mecânicas Ambientais Implementadas
 
-* **Clima Dinâmico:** Adicionar a passagem de nuvens que criam sombras móveis na pista, afetando a geração de energia de todos os competidores.
-* **Modo Competição (DSB):** Um modo de "Endurance" (resistência), simulando as provas reais do Desafio Solar Brasil (DSB). O objetivo não seria terminar em primeiro, mas sim completar o máximo de voltas em um tempo limite (ex: 30 minutos), exigindo gerenciamento de bateria de longo prazo.
-* **Vida Marinha:** Pequenas animações visuais (como golfinhos pulando) para dar mais vida ao cenário isométrico, sem afetar a jogabilidade.
+* **Clima Dinâmico (Nuvens):** O jogo possui um sistema de nuvens procedurais que se movem sobre a pista. Quando uma nuvem passa sobre o barco do jogador (sombra), a **geração de energia solar cai drasticamente**, afetando a recarga da bateria e exigindo estratégia.
+* **Física Realista:** Os barcos possuem inércia de motor (não param instantaneamente) e atraso no leme (o ângulo de virada não é imediato), simulando o comportamento real de uma embarcação na água.
 
 <div align="center">
 
