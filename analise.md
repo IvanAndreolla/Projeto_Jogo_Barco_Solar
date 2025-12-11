@@ -43,7 +43,18 @@ O diagrama apresenta como ator o **Jogador**. As principais funcionalidades que 
 > [!NOTE]
 >Elaborar um diagrama conceitual do domínio do problema.
 
-*(Esta seção pode conter uma versão simplificada do Diagrama de Classes, focando apenas nos conceitos principais: Barco, Pista, Jogador)*
+<div align="center">
+    <img src="img/DomainModel.svg"
+        style="padding: 10px"
+    >
+</div>
+
+O diagrama de domínio ilustra os conceitos fundamentais do jogo e suas relações conceituais (não de software):
+
+* **Jogador:** Responsável por controlar um **BarcoSolar**.
+* **BarcoSolar:** A entidade que compete na corrida, possuindo atributos físicos como velocidade e nível de bateria.
+* **Pista:** O ambiente onde a competição ocorre. Ela é **composta por** múltiplos **Checkpoints** que definem o progresso.
+* **Sol:** Um elemento ambiental crucial que interage com os barcos, sendo a fonte para **recarregar** a bateria dependendo da exposição.
 
 <div align="center">
 
